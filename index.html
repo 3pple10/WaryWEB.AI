@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WaryWEB AI - The Intersection of Code & Design</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+        /* Refined Light Mode Palette */
+        --light-bg: #f5f7fa;
+        --light-text: #2c3e50;
+        --light-card: #ffffff;
+        --light-border: #e2e8f0;
+        --light-input: #f7fafc;
+        --light-placeholder: #a0aec0;
+
+        /* Refined Dark Mode Palette */
+        --dark-bg: #0d141e;
+        --dark-text: #e0e7ec;
+        --dark-card: #172230;
+        --dark-border: #2d3748;
+        --dark-input: #1a202c;
+        --dark-placeholder: #718096;
+
+        /* Accent Colors */
+        --brand-blue: #0077ff;
+        --brand-purple: #8e44ad;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--light-bg);
+        color: var(--light-text);
+        transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+        line-height: 1.6; /* Improved line spacing */
+    }
+
+    /* Dark Mode Styles */
+    body.dark {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+    }
+    body.dark .bg-gray-100 { background-color: var(--dark-card); }
+    body.dark .border-gray-300 { border-color: var(--dark-border); }
+    body.dark .bg-white { background-color: var(--dark-card); }
+    body.dark .text-gray-800 { color: var(--dark-text); }
+    body.dark .text-gray-600 { color: #a0aec0; }
+    body.dark #user-input, body.dark #chat-input {
+        background-color: var(--dark-input);
+        border-color: var(--dark-border);
+        color: var(--dark-text);
+    }
+    body.dark #user-input::placeholder, body.dark #chat-input::placeholder {
+        color: var(--dark-placeholder);
+    }
+
+    /* Animated Background */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: radial-gradient(circle at 10% 10%, rgba(0, 150, 255, 0.1) 0%, transparent 20%),
+                    radial-gradient(circle at 90% 90%, rgba(138, 43, 226, 0.1) 0%, transparent 20%);
+        background-size: 200% 200%;
+        animation: move-gradient 20s infinite alternate ease-in-out;
+        opacity: 0.5;
+        transition: opacity 0.5s;
+    }
+
+    @keyframes move-gradient {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 100% 100%; }
+    }
+
+    /* New button styles */
+    .transparent-btn {
+        background-color: transparent;
+        border: 1px solid black;
+        color: black;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: all 0.2s ease-in-out;
+    }
+    .transparent-btn:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .transparent-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .transparent-btn.disabled:hover {
+        background-color: transparent;
+        transform: none;
+        cursor: not-allowed;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Dark mode for transparent buttons */
+    body.dark .transparent-btn {
+        border-color: white;
+        color: white;
+    }
+    body.dark .transparent-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+    }
+
+    .black-and-white-btn {
+        background-color: black;
+        color: white;
+        border: 1px solid black;
+        transition: all 0.2s ease-in-out;
+    }
+    .black-and-white-btn:hover {
+        background-color: rgba(0,0,0,0.8);
+        transform: translateY(-2px);
+    }
+
+    /* Dark mode for black and white buttons */
+    body.dark .black-and-white-btn {
+        background-color: white;
+        color: black;
+        border-color: white;
+    }
+    body.dark .black-and-white-btn:hover {
+        background-color: #f0f0f0;
+    }
+
+    .logo-btn {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        transition: none;
+    }
+
+    .logo-btn:hover {
+        background-color: transparent;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .logo-btn:active {
+        transform: none;
+    }
+
+    /* Logo Text with Gradient */
+    .logo-text {
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+    }
+    .waryweb-logo { background-image: linear-gradient(to right, #0077ff, #0056b3); }
+    .smanwary-logo { background-image: linear-gradient(to right, #ff4c6c, #a73c9c); }
+
+    /* Headlines */
+    .headline { font-family: 'Space Grotesk', sans-serif; }
+
+    /* Dark/Light Toggle Switch */
+    #theme-toggle {
+        cursor: pointer;
+        position: relative;
+        width: 50px;
+        height: 28px;
+        background: #e0e0e0;
+        border-radius: 9999px;
+        transition: background 0.3s ease;
+    }
+    #theme-toggle.dark { background: #333; }
+    #theme-toggle::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #theme-toggle.dark::before { transform: translateX(22px); }
+
+    #theme-toggle .icon-container {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5px;
+    }
+    #theme-toggle .icon-container svg { transition: transform 0.5s ease-in-out; }
+    #theme-toggle.dark .sun-icon { transform: rotate(360deg); }
+    #theme-toggle.dark .moon-icon { transform: rotate(360deg); }
+
+    /* Loading Indicator & Animations */
+    @keyframes pulse-dot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.7; }
+    }
+    .loading-dot { animation: pulse-dot 1.2s infinite ease-in-out; }
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Main content fade-in animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .main-content-area {
+        animation: fadeIn 0.8s ease-out forwards;
+    }
+    .output-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.75rem;
+        margin-top: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* CHATBOT BUBBLE STYLES (NEW) */
+    .chat-container {
+        border: 1px solid var(--light-border);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        background-color: var(--light-card);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    }
+    body.dark .chat-container {
+        border-color: var(--dark-border);
+        background-color: var(--dark-input);
+    }
+
+    .chat-messages {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Increased spacing */
+    }
+
+    .chat-bubble {
+        max-width: 85%;
+        padding: 1rem 1.25rem;
+        border-radius: 1.5rem;
+        word-wrap: break-word;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        line-height: 1.5;
+    }
+
+    .user-bubble {
+        background: linear-gradient(135deg, #0077ff, #0056b3);
+        color: white;
+        align-self: flex-end;
+        border-bottom-right-radius: 0.75rem;
+    }
+
+    .ai-bubble {
+        background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+        color: var(--light-text);
+        align-self: flex-start;
+        border-bottom-left-radius: 0.75rem;
+    }
+    body.dark .ai-bubble {
+        background: linear-gradient(135deg, #2D3748, #1a202c);
+        color: var(--dark-text);
+    }
+
+    /* Code Block Styling */
+    .code-block {
+        position: relative;
+        background-color: var(--dark-input);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .code-block code {
+        display: block;
+        white-space: pre-wrap;
+        color: var(--dark-text);
+        font-family: monospace;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    .copy-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--dark-text);
+        padding: 0.35rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .copy-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
+
+    /* Inline code highlighting */
+    .chat-bubble code {
+        background-color: rgba(0, 0, 0, 0.05);
+        padding: 0.1rem 0.3rem;
+        border-radius: 0.25rem;
+        font-family: monospace;
+        color: var(--light-text);
+    }
+    body.dark .chat-bubble code {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: var(--dark-text);
+    }
+    .chat-bubble a {
+        color: var(--brand-blue);
+        text-decoration: underline;
+    }
+
+    /* Loading dots for chatbot */
+    @keyframes bounce {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1); }
+    }
+    .loading-dots {
+        display: inline-flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    .loading-dot-ball {
+        width: 0.6rem;
+        height: 0.6rem;
+        background-color: var(--brand-blue);
+        border-radius: 50%;
+        animation: bounce 1s infinite;
+    }
+    .loading-dot-ball:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dot-ball:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Fix for layout shift - ensure min-height is consistent */
+    .main-content-area {
+        min-height: 500px; /* Adjust this value as needed to fit the content */
+        transition: all 0.3s ease-in-out;
+    }
+    #ai-services-container, #ai-chatbot-container {
+        min-height: 400px; /* Ensure content containers are at least a certain height */
+    }
+    #chat-messages {
+        height: 300px; /* Fixed height for chat messages area */
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 transition-colors duration-500">
+
+<!-- Header -->
+<header class="fixed top-0 z-50 w-full backdrop-blur-md px-6 md:px-12 py-4 transition-all duration-300 ease-in-out">
+  <nav class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+    <!-- Logo -->
+    <a href="" class="text-3xl font-bold headline tracking-wide mb-4 md:mb-0">
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-600">WaryWEB AI</span>
+    </a>
+    <div class="flex flex-wrap items-center justify-center space-x-2 md:space-x-8">
+      <!-- Smanwary Button -->
+      <button id="smanwary-btn" class="logo-btn px-4 py-2 text-sm md:text-base font-medium">
+        <span class="logo-text smanwary-logo">Smanwary</span>
+      </button>
+      <!-- WaryWEB Button -->
+      <button id="waryweb-btn" class="logo-btn px-4 py-2 text-sm md:text-base font-medium">
+        <span class="logo-text waryweb-logo">WaryWEB</span>
+      </button>
+      <!-- Dark/Light Mode Toggle -->
+      <div id="theme-toggle" class="w-12 h-6 bg-gray-200 rounded-full p-1 cursor-pointer transition-colors duration-300 relative">
+        <div class="absolute inset-0 flex items-center">
+          <!-- Moon Icon -->
+          <svg class="w-4 h-4 text-gray-500 absolute transition-opacity duration-300 opacity-100 dark:opacity-0 moon-icon" style="left: 4px;" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.96a.999.999 0 01-.892.518C15.772 14.28 14.293 15 12.5 15A6.5 6.5 0 016.5 8.5C6.5 6.707 7.217 5.228 7.742 4.145a1 1 0 01.518-.892c.18-.088.375-.13.57-.13.385 0 .763.148 1.054.439a6.47 6.47 0 013.235 3.235c.29.291.439.669.439 1.054a.999.999 0 01-.892.518z"></path></svg>
+          <!-- Sun Icon -->
+          <svg class="w-4 h-4 text-yellow-500 absolute transition-opacity duration-300 opacity-0 dark:opacity-100 sun-icon" style="right: 4px;" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 3.707a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-3.707 4.293a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414zM10 16a1 1 0 01-1-1v-1a1 1 0 112 0v1a1 1 0 01-1 1zM6.293 14.293a1 1 0 010-1.414l.707-.707a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414 0zM4 10a1 1 0 01-1-1v-1a1 1 0 112 0v1a1 1 0 01-1 1zM3.707 5.707a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414z"></path></svg>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="min-h-screen flex items-center justify-center p-4 sm:p-8">
+  <section class="bg-gray-100 dark:bg-dark-card p-6 sm:p-10 rounded-3xl shadow-lg w-full max-w-4xl mx-auto flex flex-col items-center main-content-area">
+    <!-- Title & Navigation Buttons -->
+    <h1 class="text-3xl sm:text-5xl font-bold headline mb-8 text-center text-gray-800 dark:text-gray-100">
+      WaryWEB AI
+    </h1>
+    <div class="flex justify-center flex-wrap gap-4 mb-8">
+      <button id="show-services-btn" class="black-and-white-btn px-6 py-3 font-medium rounded-full">AI Services</button>
+      <button id="show-chat-btn" class="black-and-white-btn px-6 py-3 font-medium rounded-full">AI Chatbot</button>
+    </div>
+
+    <!-- AI Services Container (initially visible) -->
+    <div id="ai-services-container" class="w-full">
+      <!-- Textarea for user input -->
+      <textarea id="user-input" class="w-full h-48 p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6 transition-all duration-200 resize-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100" placeholder="Type your text here..."></textarea>
+
+      <!-- Buttons for different AI services -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full mb-6">
+        <button id="summarize-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-transparent disabled:border-black disabled:text-black">Summarize</button>
+        <button id="continue-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Continue Writing</button>
+        <button id="rephrase-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Rephrase</button>
+        <button id="idea-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Generate Idea</button>
+        <button id="explain-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Explain Concept</button>
+        <button id="description-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Product Description</button>
+        <button id="poem-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Write a Poem</button>
+        <button id="translate-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Translate to English</button>
+        <button id="translate-bangla-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Translate to Bangla</button>
+        <button id="generate-image-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Generate Image</button>
+        <button id="tts-btn" class="transparent-btn px-4 py-3 font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Text to Speech</button>
+      </div>
+
+      <!-- Output and Loading Spinner Container -->
+      <div class="w-full">
+        <!-- Message box for loading/errors -->
+        <div id="message-box" class="hidden p-4 rounded-lg text-sm mb-4 text-center" role="alert"></div>
+
+        <!-- Output Area for generated text/images/audio -->
+        <div id="output-area" class="w-full p-6 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 min-h-[100px] transition-all duration-200 text-gray-800 dark:text-gray-100 break-words whitespace-pre-wrap">
+          Your AI-generated response will appear here.
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Chatbot Container (initially hidden) -->
+    <div id="ai-chatbot-container" class="w-full hidden">
+      <div id="chat-messages" class="flex flex-col space-y-4 overflow-y-auto max-h-[60vh] p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 mb-4">
+        <div class="chat-bubble ai-bubble">Hello! How can I help you today?</div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <input type="text" id="chat-input" class="flex-grow p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100" placeholder="Type your message...">
+        <button id="chat-send-btn" class="black-and-white-btn px-4 py-2 font-medium rounded-lg">
+          Send
+        </button>
+      </div>
+      <div id="chat-message-box" class="hidden p-4 rounded-lg text-sm mt-4 text-center" role="alert"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+      // --- Theme Toggle ---
+      const themeToggle = document.getElementById('theme-toggle');
+      const moonIcon = themeToggle.querySelector('.moon-icon');
+      const sunIcon = themeToggle.querySelector('.sun-icon');
+
+      themeToggle.addEventListener('click', () => {
+          const isDarkMode = document.body.classList.toggle('dark');
+          localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+      });
+
+      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.body.classList.add('dark');
+      }
+
+      // --- UI Element Selectors ---
+      const aiServicesContainer = document.getElementById('ai-services-container');
+      const aiChatbotContainer = document.getElementById('ai-chatbot-container');
+      const showServicesBtn = document.getElementById('show-services-btn');
+      const showChatBtn = document.getElementById('show-chat-btn');
+      const smanwaryBtn = document.getElementById('smanwary-btn');
+      const warywebBtn = document.getElementById('waryweb-btn');
+
+      const userInput = document.getElementById('user-input');
+      const outputArea = document.getElementById('output-area');
+      const messageBox = document.getElementById('message-box');
+      const buttons = document.querySelectorAll('#ai-services-container button');
+
+      const chatMessagesDiv = document.getElementById('chat-messages');
+      const chatInput = document.getElementById('chat-input');
+      const chatSendBtn = document.getElementById('chat-send-btn');
+      const chatMessageBox = document.getElementById('chat-message-box');
+
+      const default_api_key = "";
+      let chatHistory = [{ role: "model", parts: [{ text: "Hello! How can I help you today?" }] }];
+      let chatHistoryArray = [{ role: "model", parts: [{ text: "Hello! How can I help you today?" }] }];
+
+      // --- UI State Management ---
+      function showSection(sectionId) {
+          aiServicesContainer.classList.add('hidden');
+          aiChatbotContainer.classList.add('hidden');
+          document.getElementById(sectionId).classList.remove('hidden');
+          // Reset input and output areas when switching
+          userInput.value = '';
+          outputArea.innerHTML = 'Your AI-generated response will appear here.';
+      }
+
+      showServicesBtn.addEventListener('click', () => showSection('ai-services-container'));
+      showChatBtn.addEventListener('click', () => showSection('ai-chatbot-container'));
+      smanwaryBtn.addEventListener('click', () => {
+          console.log("Navigating to Smanwary... (This is a placeholder for a future page)");
+      });
+      warywebBtn.addEventListener('click', () => {
+           console.log("Navigating to WaryWEB... (This is a placeholder for a future page)");
+      });
+
+
+      // --- Helper Functions ---
+      function showMessage(text, type = 'info', targetBox) {
+          targetBox.textContent = text;
+          targetBox.className = 'p-4 rounded-lg text-sm mb-4 text-center';
+          targetBox.classList.add('block');
+          if (type === 'error') {
+              targetBox.classList.add('bg-red-100', 'text-red-700');
+          } else if (type === 'loading') {
+              targetBox.classList.add('bg-blue-100', 'text-blue-700');
+              targetBox.innerHTML = `
+                  <div class="flex items-center justify-center space-x-2">
+                      <span>${text}</span>
+                      <div class="flex space-x-1">
+                          <span class="w-2 h-2 bg-blue-700 rounded-full loading-dot"></span>
+                          <span class="w-2 h-2 bg-blue-700 rounded-full loading-dot"></span>
+                          <span class="w-2 h-2 bg-blue-700 rounded-full loading-dot"></span>
+                      </div>
+                  </div>
+              `;
+          } else {
+              targetBox.classList.add('bg-gray-100', 'text-gray-700');
+          }
+      }
+
+      function hideMessage(targetBox) {
+          targetBox.classList.remove('block');
+          targetBox.classList.add('hidden');
+      }
+
+      // --- API Calls ---
+      async function callGeminiApi(prompt, model = 'gemini-2.5-flash-preview-05-20') {
+          let retries = 0;
+          const maxRetries = 5;
+          const baseDelay = 1000;
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${default_api_key}`;
+
+          while (retries < maxRetries) {
+              try {
+                  const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                  const response = await fetch(url, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(payload)
+                  });
+                  if (response.status === 429) {
+                      const delay = baseDelay * Math.pow(2, retries);
+                      await new Promise(resolve => setTimeout(resolve, delay));
+                      retries++;
+                      continue;
+                  }
+                  if (!response.ok) throw new Error(`API error: ${response.status} ${response.statusText}`);
+                  const result = await response.json();
+
+                  const candidate = result.candidates && result.candidates.length > 0 ? result.candidates[0] : null;
+                  if (candidate && candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+                      return candidate.content.parts[0].text;
+                  } else if (candidate && candidate.safetyRatings && candidate.safetyRatings.some(rating => rating.blocked)) {
+                      throw new Error("Response was blocked due to safety concerns. Please try a different query.");
+                  } else {
+                      throw new Error("Invalid API response structure or no valid response found.");
+                  }
+              } catch (error) {
+                  retries++;
+                  if (retries >= maxRetries) throw error;
+                  const delay = baseDelay * Math.pow(2, retries);
+                  await new Promise(resolve => setTimeout(resolve, delay));
+              }
+          }
+      }
+
+      async function callGeminiChatApi(prompt, model = 'gemini-2.5-flash-preview-05-20') {
+          let retries = 0;
+          const maxRetries = 5;
+          const baseDelay = 1000;
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${default_api_key}`;
+
+          // Add the new user message to chat history
+          chatHistoryArray.push({ role: "user", parts: [{ text: prompt }] });
+
+          while (retries < maxRetries) {
+              try {
+                  const payload = { contents: chatHistoryArray };
+                  const response = await fetch(url, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(payload)
+                  });
+                  if (response.status === 429) {
+                      const delay = baseDelay * Math.pow(2, retries);
+                      await new Promise(resolve => setTimeout(resolve, delay));
+                      retries++;
+                      continue;
+                  }
+                  if (!response.ok) throw new Error(`API error: ${response.status} ${response.statusText}`);
+                  const result = await response.json();
+
+                  const candidate = result.candidates && result.candidates.length > 0 ? result.candidates[0] : null;
+                  if (candidate && candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+                      const aiResponse = candidate.content.parts[0].text;
+                      chatHistoryArray.push({ role: "model", parts: [{ text: aiResponse }] });
+                      return aiResponse;
+                  } else if (candidate && candidate.safetyRatings && candidate.safetyRatings.some(rating => rating.blocked)) {
+                      throw new Error("Response was blocked due to safety concerns. Please try a different query.");
+                  } else {
+                      throw new Error("Invalid API response structure or no valid response found.");
+                  }
+
+              } catch (error) {
+                  retries++;
+                  if (retries >= maxRetries) throw error;
+                  const delay = baseDelay * Math.pow(2, retries);
+                  await new Promise(resolve => setTimeout(resolve, delay));
+              }
+          }
+      }
+
+      async function generateImage(prompt) {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${default_api_key}`;
+          const payload = { instances: { prompt: prompt }, parameters: { "sampleCount": 1 } };
+          const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          const result = await response.json();
+          if (result.predictions && result.predictions.length > 0) return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+          throw new Error("Failed to generate image.");
+      }
+
+      function base64ToArrayBuffer(base64) {
+          const binaryString = window.atob(base64);
+          const len = binaryString.length;
+          const bytes = new Uint8Array(len);
+          for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
+          return bytes.buffer;
+      }
+
+      function pcmToWav(pcmData, sampleRate) {
+          const numChannels = 1;
+          const bytesPerSample = 2;
+          const blockAlign = numChannels * bytesPerSample;
+          const byteRate = sampleRate * blockAlign;
+          const buffer = new ArrayBuffer(44 + pcmData.byteLength);
+          const view = new DataView(buffer);
+          writeString(view, 0, 'RIFF');
+          view.setUint32(4, 36 + pcmData.byteLength, true);
+          writeString(view, 8, 'WAVE');
+          writeString(view, 12, 'fmt ');
+          view.setUint32(16, 16, true);
+          view.setUint16(20, 1, true);
+          view.setUint16(22, numChannels, true);
+          view.setUint32(24, sampleRate, true);
+          view.setUint32(28, byteRate, true);
+          view.setUint16(32, blockAlign, true);
+          view.setUint16(34, 16, true);
+          writeString(view, 36, 'data');
+          view.setUint32(40, pcmData.byteLength, true);
+          for (let i = 0; i < pcmData.length; i++) view.setInt16(44 + i * 2, pcmData[i], true);
+          return new Blob([view], { type: 'audio/wav' });
+      }
+
+      function writeString(view, offset, string) {
+          for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
+      }
+
+      async function generateTTS(prompt) {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${default_api_key}`;
+          const payload = {
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } } },
+              model: "gemini-2.5-flash-preview-tts"
+          };
+          const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          const result = await response.json();
+          const part = result?.candidates?.[0]?.content?.parts?.[0];
+          const audioData = part?.inlineData?.data;
+          const mimeType = part?.inlineData?.mimeType;
+
+          if (audioData && mimeType) {
+              const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+              const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000;
+              const pcmData = base64ToArrayBuffer(audioData);
+              const pcm16 = new Int16Array(pcmData);
+              const wavBlob = pcmToWav(pcm16, sampleRate);
+              return URL.createObjectURL(wavBlob);
+          }
+          throw new Error("Failed to generate audio.");
+      }
+
+      // Function to copy code to clipboard
+      window.copyCode = function(button) {
+          const codeBlock = button.parentElement;
+          const codeElement = codeBlock.querySelector('code');
+          const codeText = codeElement.innerText;
+          try {
+              const tempInput = document.createElement('textarea');
+              tempInput.value = codeText;
+              document.body.appendChild(tempInput);
+              tempInput.select();
+              document.execCommand('copy');
+              document.body.removeChild(tempInput);
+              button.textContent = 'Copied!';
+              setTimeout(() => {
+                  button.textContent = 'Copy';
+              }, 2000);
+          } catch (err) {
+              console.error('Failed to copy text:', err);
+              button.textContent = 'Error!';
+              setTimeout(() => {
+                  button.textContent = 'Copy';
+              }, 2000);
+          }
+      };
+
+      // Function to format the AI's response with links, inline code, and code blocks
+      function formatChatResponse(text) {
+          const parts = text.split('```');
+          let formattedHtml = '';
+          for (let i = 0; i < parts.length; i++) {
+              if (i % 2 === 1) {
+                  const codeBlockContent = parts[i];
+                  const firstLineBreak = codeBlockContent.indexOf('\n');
+                  let language = 'text';
+                  let code = codeBlockContent;
+                  if (firstLineBreak !== -1) {
+                      const maybeLanguage = codeBlockContent.substring(0, firstLineBreak).trim();
+                      if (maybeLanguage.length > 0 && !maybeLanguage.includes(' ')) {
+                          language = maybeLanguage;
+                          code = codeBlockContent.substring(firstLineBreak + 1);
+                      }
+                  }
+                  formattedHtml += `<div class="code-block"><button onclick="copyCode(this)" class="copy-btn">Copy</button><pre><code class="language-${language}">${code.trim()}</code></pre></div>`;
+              } else {
+                  let regularText = parts[i];
+                  regularText = regularText.replace(/`([^`]+)`/g, '<code>$1</code>');
+                  const urlRegex = /(https?:\/\/[^\s]+)/g;
+                  regularText = regularText.replace(urlRegex, (url) => { return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`; });
+                  regularText = regularText.replace(/\n/g, '<br>');
+                  formattedHtml += regularText;
+              }
+          }
+          return formattedHtml;
+      }
+
+      // --- AI Services Logic ---
+      buttons.forEach(button => {
+          button.addEventListener('click', async () => {
+              const text = userInput.value.trim();
+              const buttonId = button.id;
+              let prompt = "";
+              let serviceType = 'text';
+              if (!text && buttonId !== 'generate-image-btn' && buttonId !== 'tts-btn') {
+                  showMessage("Please enter text.", "error", messageBox);
+                  return;
+              }
+              switch (buttonId) {
+                  case 'summarize-btn': prompt = `Summarize the following text concisely:\n\n${text}`; break;
+                  case 'continue-btn': prompt = `Continue the following text naturally and creatively:\n\n${text}`; break;
+                  case 'rephrase-btn': prompt = `Rephrase the following text to sound more professional and clear:\n\n${text}`; break;
+                  case 'idea-btn': prompt = `Generate a creative and unique business or project idea about "${text}":`; break;
+                  case 'explain-btn': prompt = `Explain the following concept simply and concisely, as if to a beginner:\n\n${text}`; break;
+                  case 'description-btn': prompt = `Write a compelling and concise product description based on the following information:\n\n${text}`; break;
+                  case 'poem-btn': prompt = `Write a short, uplifting poem about "${text}":`; break;
+                  case 'translate-btn': prompt = `Translate the following text into English:\n\n${text}`; break;
+                  case 'translate-bangla-btn': prompt = `Translate the following text into Bangla:\n\n${text}`; break;
+                  case 'generate-image-btn':
+                      if (!text) { showMessage("Please enter a description for the image.", "error", messageBox); return; }
+                      prompt = text; serviceType = 'image';
+                      break;
+                  case 'tts-btn':
+                      if (!text) { showMessage("Please enter text to convert to speech.", "error", messageBox); return; }
+                      prompt = text; serviceType = 'audio';
+                      break;
+                  default: showMessage("An unknown service was requested.", "error", messageBox); return;
+              }
+              buttons.forEach(btn => btn.disabled = true);
+              outputArea.innerHTML = "";
+              showMessage("Thinking...", "loading", messageBox);
+              try {
+                  let result;
+                  if (serviceType === 'image') {
+                      showMessage("Generating image...", "loading", messageBox);
+                      result = await generateImage(prompt);
+                      const img = document.createElement('img');
+                      img.src = result; img.alt = "Generated image"; img.className = "output-image";
+                      outputArea.appendChild(img);
+                  } else if (serviceType === 'audio') {
+                      showMessage("Generating audio...", "loading", messageBox);
+                      result = await generateTTS(prompt);
+                      const audio = document.createElement('audio');
+                      audio.controls = true; audio.src = result;
+                      outputArea.appendChild(audio);
+                  } else {
+                      result = await callGeminiApi(prompt);
+                      outputArea.textContent = result;
+                  }
+                  hideMessage(messageBox);
+              } catch (error) {
+                  showMessage(`An error occurred: ${error.message}`, "error", messageBox);
+                  outputArea.textContent = "Could not generate a response.";
+              } finally {
+                  buttons.forEach(btn => btn.disabled = false);
+              }
+          });
+      });
+
+      // --- AI Chatbot Logic ---
+      function addMessage(content, role) {
+          const messageDiv = document.createElement('div');
+          messageDiv.className = `chat-bubble ${role}-bubble`;
+          if (role === 'user') {
+               messageDiv.textContent = content;
+          } else {
+              messageDiv.innerHTML = content;
+          }
+          chatMessagesDiv.appendChild(messageDiv);
+          chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+      }
+
+      async function sendMessage() {
+          const userText = chatInput.value.trim();
+          if (userText === '') {
+              return;
+          }
+          addMessage(userText, 'user');
+          chatInput.value = '';
+          chatSendBtn.disabled = true;
+          const loadingDiv = document.createElement('div');
+          loadingDiv.id = 'loading-indicator';
+          loadingDiv.classList.add('chat-bubble', 'ai-bubble');
+          loadingDiv.innerHTML = `<div class="loading-dots"><span class="loading-dot-ball"></span><span class="loading-dot-ball"></span><span class="loading-dot-ball"></span></div>`;
+          chatMessagesDiv.appendChild(loadingDiv);
+          chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+          try {
+              const aiResponseText = await callGeminiChatApi(userText);
+              const formattedHtml = formatChatResponse(aiResponseText);
+              loadingDiv.remove();
+              addMessage(formattedHtml, 'ai');
+          } catch (error) {
+              loadingDiv.remove();
+              console.error("Chatbot error:", error);
+              addMessage("I'm sorry, an error occurred. Please try again.", 'ai');
+          } finally {
+              chatSendBtn.disabled = false;
+          }
+      }
+
+      chatSendBtn.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              sendMessage();
+          }
+      });
+  });
+</script>
+
+</body>
+</html>
