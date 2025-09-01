@@ -348,8 +348,11 @@
       const messageBox = document.getElementById('messageBox');
       const loadingIndicator = document.getElementById('loadingIndicator');
       const mainChatArea = document.getElementById('mainChatArea');
-      const apiKey = "sk-b62f83a43f2c4b24858d0ca6296779d0";
-      const apiUrl = "https://api.deepseek.com/v1/chat/completions";
+
+      // --- API Configuration ---
+      const apiKey = "AIzaSyC8-7OLkQZiVtyZ7sir0GpWBHZ9ZXRrPEE";
+      const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
       // State management for chat history
       let currentConversation = [];
       let allConversations = [];
