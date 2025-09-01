@@ -296,7 +296,6 @@
     </button>
   </div>
   <div class="history-list">
-    <!-- History items will be populated by JS -->
   </div>
 </div>
 
@@ -306,12 +305,10 @@
       History
     </button>
     <h1 class="text-3xl font-bold tracking-tight text-gray-100">WaryOn</h1>
-    <!-- The new chat button is now in the sidebar -->
   </header>
 
   <main class="flex-1 overflow-auto p-4 flex flex-col items-center" id="mainChatArea">
     <div id="chatHistory" class="message-history w-full max-w-2xl">
-      <!-- Chat bubbles will be added here by JS -->
     </div>
     <div id="loadingIndicator" class="loading-dots hidden">
       <div class="loading-dot"></div>
@@ -350,7 +347,8 @@
       const mainChatArea = document.getElementById('mainChatArea');
 
       // --- API Configuration ---
-   
+      const apiKey = "sk-b62f83a43f2c4b24858d0ca6296779d0"; // 🔑 Replace with your actual DeepSeek API key
+      const apiUrl = "";
 
       // State management for chat history
       let currentConversation = [];
@@ -495,18 +493,28 @@
           try {
               if (!apiKey) {
                   console.error('Error: API key is not available.');
-                  addMessageToHistory('ai', 'An error occurred: The API key is not available. Please ensure the Canvas environment is providing the key correctly.', false);
+                  addMessageToHistory('ai', 'An error occurred: The API key is not available. Please ensure the key is configured correctly.', false);
                   return;
               }
 
+              const currentConv = allConversations.find(conv => conv.id === currentConversationId);
+              const messages = currentConv.messages.map(msg => ({
+                  role: msg.sender === 'ai' ? 'assistant' : 'user',
+                  content: msg.text
+              }));
+
               const payload = {
-                  contents: [{ parts: [{ text: message }] }],
-                  tools: [{ "google_search": {} }],
+                  model: "deepseek-chat",
+                  messages: messages,
+                  stream: false
               };
 
-              const response = await fetch(`${apiUrl}?key=${apiKey}`, {
+              const response = await fetch(apiUrl, {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${apiKey}`
+                  },
                   body: JSON.stringify(payload)
               });
 
@@ -515,8 +523,7 @@
               }
 
               const result = await response.json();
-              const candidate = result.candidates?.[0];
-              const aiResponseText = candidate?.content?.parts?.[0]?.text || "No response from AI.";
+              const aiResponseText = result.choices?.[0]?.message?.content || "No response from AI.";
 
               addMessageToHistory('ai', aiResponseText);
 
